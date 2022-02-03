@@ -33,10 +33,6 @@ module.exports = class Snowfall {
 	}
 
 	static start() {
-		if (Snowfall.__hasInit) return;
-
-		Snowfall.__hasInit = true;
-
 		// update settings with initial options
 		// commented out because the caller of start() calls it anyways
 		//Snowfall.updateSettings(Snowfall.options);
@@ -44,7 +40,7 @@ module.exports = class Snowfall {
 		// register events
 
 		document.onvisibilitychange = () =>
-			document['hidden'] ? Snowfall.stop() : Snowfall.start();
+			document['hidden'] ? Snowfall.__stop() : Snowfall.__start();
 
 		Snowfall.__snowfield.ontransitionend = (e) => {
 			let snowflake = e.target;
@@ -54,6 +50,11 @@ module.exports = class Snowfall {
 
 		Snowfall.__snowfield.className = 'snowfield';
 		document.body.appendChild(Snowfall.__snowfield);
+	}
+
+	static __start() {
+		if (Snowfall.__hasInit) return;
+		Snowfall.__hasInit = true;
 
 		Snowfall.__timer = window.setInterval(
 			Snowfall.__loop.bind(this),
@@ -62,17 +63,18 @@ module.exports = class Snowfall {
 	}
 
 	static stop() {
-		if (!Snowfall.__hasInit) return;
-
-		document.body.removeChild(Snowfall.__snowfield);
-
+		Snowfall.__stop();
+		document.onvisibilitychange = null;
 		Snowfall.__snowfield.ontransitionend = null;
-		window.clearInterval(Snowfall.__timer);
+		Snowfall.__snowfield.remove();
+	}
 
-		Snowfall.__timer = null;
-		Snowfall.__queue = [];
-
+	static __stop() {
+		if (!Snowfall.__hasInit) return;
 		Snowfall.__hasInit = false;
+
+		window.clearInterval(Snowfall.__timer);
+		Snowfall.__timer = null;
 	}
 
 	static updateSettings(source) {

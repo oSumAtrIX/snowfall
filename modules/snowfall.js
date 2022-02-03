@@ -131,7 +131,6 @@ module.exports = class Snowfall {
 			Snowfall.options.minSize,
 			Snowfall.options.maxSize
 		);
-
 		let styles = {
 			top: `${-2 * size}px`,
 			left: `${Snowfall.__random(0, window.innerWidth - size)}px`,
@@ -147,6 +146,12 @@ module.exports = class Snowfall {
 				0.2
 			)}ms linear`,
 		};
+
+		if (Snowfall.options.minBlur || Snowfall.options.maxBlur)
+			styles.filter = `blur(${Snowfall.__random(
+				Snowfall.options.minBlur,
+				Snowfall.options.maxBlur
+			)}px)`;
 
 		switch (Snowfall.options.type) {
 			case 'solid':

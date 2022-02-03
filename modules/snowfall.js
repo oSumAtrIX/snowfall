@@ -33,12 +33,13 @@ module.exports = class Snowfall {
 	}
 
 	static start() {
+		Snowfall.__start();
+
 		// update settings with initial options
 		// commented out because the caller of start() calls it anyways
 		//Snowfall.updateSettings(Snowfall.options);
 
 		// register events
-
 		document.onvisibilitychange = () =>
 			document['hidden'] ? Snowfall.__stop() : Snowfall.__start();
 
@@ -66,7 +67,9 @@ module.exports = class Snowfall {
 		Snowfall.__stop();
 		document.onvisibilitychange = null;
 		Snowfall.__snowfield.ontransitionend = null;
+		Snowfall.__snowfield.innerHTML = null;
 		Snowfall.__snowfield.remove();
+		Snowfall.__queue = [];
 	}
 
 	static __stop() {

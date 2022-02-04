@@ -12,6 +12,7 @@ module.exports = class Snowfall {
 		randomSpeed: 1,
 		minBlur: 0,
 		maxBlur: 1,
+		color: '#FFF',
 	};
 
 	static __queue = [];
@@ -90,6 +91,13 @@ module.exports = class Snowfall {
 		Snowfall.__snowflake.className =
 			'snowflake snowflake-' + Snowfall.options.type;
 		Snowfall.__snowflake.dataset.type = Snowfall.options.type;
+
+		// for some reason this gets overwritten
+		// TODO: find out why
+		document.documentElement.style.setProperty(
+			'--snow-color',
+			Snowfall.options.color
+		);
 	}
 
 	static __createSnowflake() {
@@ -102,6 +110,7 @@ module.exports = class Snowfall {
 			snowflake['src'] = Snowfall.options.content;
 		} else {
 			// innerHTML supports html
+			// TODO: may need to escape scripts
 			snowflake.innerHTML = Snowfall.options.content;
 		}
 
@@ -131,27 +140,45 @@ module.exports = class Snowfall {
 			Snowfall.options.minSize,
 			Snowfall.options.maxSize
 		);
+
+		// calculate the snowflake's speed
+
+		let bottom = window.innerHeight + size * 2;
+
+		let speed = Snowfall.__random(
+			bottom / Snowfall.options.randomSpeed,
+			bottom * Snowfall.options.randomSpeed
+		);
 		let styles = {
 			top: `${-2 * size}px`,
 			left: `${Snowfall.__random(0, window.innerWidth - size)}px`,
 			opacity: opacity,
-			filter: `blur(${Snowfall.__random(
-				Snowfall.options.minBlur,
-				Snowfall.options.maxBlur
-			)}px)`,
 			transform: 'none',
-			transition: `${Snowfall.__random(
-				null,
-				window.innerHeight * 20,
-				0.2
-			)}ms linear`,
+			transition: `${(speed * 18) / Snowfall.options.speed}ms linear`,
 		};
+
+		// skip blur if it's not neede
 
 		if (Snowfall.options.minBlur || Snowfall.options.maxBlur)
 			styles.filter = `blur(${Snowfall.__random(
 				Snowfall.options.minBlur,
 				Snowfall.options.maxBlur
 			)}px)`;
+
+		// add movement to the snowflake
+
+		let transformValue = `translate(${Snowfall.__random(
+			-100,
+			100
+		)}px,${bottom}px)`;
+
+		if (Snowfall.options.type != 'solid') {
+			transformValue += ` rotate(${Snowfall.__random(
+				null,
+				window.innerHeight * 0.8,
+				1
+			)}deg)`;
+		}
 
 		switch (Snowfall.options.type) {
 			case 'solid':
@@ -169,26 +196,12 @@ module.exports = class Snowfall {
 
 		// animate the snowflake
 
-		setTimeout(
-			(() => {
-				let speed = Snowfall.options.speed * window.innerHeight + size * 2;
-				Snowfall.__setStyle(snowflake, {
-					transform: `translate(${Snowfall.__random(
-						-100,
-						100
-					)}px,${Snowfall.__random(
-						speed / Snowfall.options.randomSpeed,
-						speed * Snowfall.options.randomSpeed
-					)}px) rotate(${Snowfall.__random(
-						null,
-						window.innerHeight * 0.8,
-						1
-					)}deg)`,
-					opacity: Snowfall.options.fadeOut ? 0 : opacity,
-				});
-			}).bind(this),
-			100
-		);
+		setTimeout(() => {
+			Snowfall.__setStyle(snowflake, {
+				transform: transformValue,
+				opacity: Snowfall.options.fadeOut ? 0 : opacity,
+			});
+		}, 100);
 
 		Snowfall.__snowfield.appendChild(snowflake);
 	}

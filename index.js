@@ -14,8 +14,22 @@ module.exports = class Snowfall extends Plugin {
 
 		this.loadStylesheet('./index.css');
 
+		this.start();
+	}
+
+	reload() {
+		this.stop();
+		this.start();
+	}
+
+	stop() {
+		SnowfallJS.stop();
+	}
+
+	start() {
 		this.initSettings = this.updateSettings;
 		this.initSettings();
+
 		SnowfallJS.start();
 	}
 
@@ -31,6 +45,7 @@ module.exports = class Snowfall extends Plugin {
 			minBlur: this.settings.get('minimum-blur'),
 			maxBlur: this.settings.get('maximum-blur'),
 			interval: this.settings.get('interval'),
+			color: this.settings.get('color'),
 			type: type == 0 ? 'solid' : type == 1 ? 'text' : 'image',
 		});
 	}
@@ -38,6 +53,6 @@ module.exports = class Snowfall extends Plugin {
 	pluginWillUnload() {
 		powercord.api.settings.unregisterSettings(this.entityID);
 
-		SnowfallJS.stop();
+		this.stop();
 	}
 };

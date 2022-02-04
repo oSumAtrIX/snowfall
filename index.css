@@ -1,3 +1,7 @@
+:root {
+	--snow-color: white;
+}
+
 .snowfield {
 	pointer-events: none;
 	user-select: none;
@@ -8,12 +12,15 @@
 
 .snowflake {
 	position: absolute;
-	color: #fff;
+	color: var(--snow-color);
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
+
+	will-change: transform, opacity;
+	backface-visibility: hidden;
 }
 
 .snowflake-solid {
 	border-radius: 50%;
-	background: #fff;
+	background: var(--snow-color);
 }

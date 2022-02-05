@@ -83,8 +83,8 @@ module.exports = class Snowfall {
 
 	static updateSettings(source) {
 		for (var property in source) Snowfall.options[property] = source[property];
-		Snowfall.__isImage = Snowfall.options.type == 'image';
 
+		Snowfall.__isImage = Snowfall.options.type == 'image';
 		Snowfall.__snowflake = Snowfall.__isImage
 			? new Image()
 			: document.createElement('div');
@@ -149,6 +149,7 @@ module.exports = class Snowfall {
 			bottom / Snowfall.options.randomSpeed,
 			bottom * Snowfall.options.randomSpeed
 		);
+
 		let styles = {
 			top: `${-2 * size}px`,
 			left: `${Snowfall.__random(0, window.innerWidth - size)}px`,

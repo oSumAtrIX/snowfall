@@ -33,6 +33,7 @@ module.exports = class SnowfallSettings extends React.Component {
 					Fade out
 				</SwitchItem>
 				<RadioGroup
+					value={0}
 					onChange={(e) => this.__updateSettings('type', e.value)}
 					value={this.props.getSetting('type', 'solid')}
 					options={[

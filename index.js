@@ -34,18 +34,24 @@ module.exports = class Snowfall extends Plugin {
 	}
 
 	updateSettings() {
-		let type = this.settings.get('type');
+		let type = this.settings.get('type', 0);
 		SnowfallJS.updateSettings({
-			minSize: this.settings.get('minimum-size'),
-			maxSize: this.settings.get('maximum-size'),
-			content: this.settings.get('content'),
-			fadeOut: this.settings.get('fade-out'),
-			speed: this.settings.get('speed'),
-			randomSpeed: this.settings.get('random-speed'),
-			minBlur: this.settings.get('minimum-blur'),
-			maxBlur: this.settings.get('maximum-blur'),
-			interval: this.settings.get('interval'),
-			color: this.settings.get('color'),
+			minSize: this.settings.get('minimum-size', SnowfallJS.options.minSize),
+			maxSize: this.settings.get('maximum-size', SnowfallJS.options.maxSize),
+			content: this.settings.get('content', SnowfallJS.options.content),
+			fadeOut: this.settings.get('fade-out', SnowfallJS.options.fadeOut),
+			speed: this.settings.get('speed', SnowfallJS.options.speed),
+			maxBlur: this.settings.get('maximum-blur', SnowfallJS.options.maxBlur),
+			interval: this.settings.get('interval', SnowfallJS.options.interval),
+			color: this.settings.get('color', SnowfallJS.options.color),
+			randomSpeed: this.settings.get(
+				'random-speed',
+				SnowfallJS.options.randomSpeed
+			),
+			minBlur: this.settings.get(
+				'minimum-blur',
+				SnowfallJS.options.minimumBlur
+			),
 			type: type == 0 ? 'solid' : type == 1 ? 'text' : 'image',
 		});
 	}
